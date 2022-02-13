@@ -50,20 +50,31 @@ class Point {
     this.yPos = y;
   }
 
-  goNorth() {
-    this.yPos += 1;
-  }
+  goNorth() { this.yPos += 1; }
 
-  goEast() {
-    this.xPos += 1;
-  }
+  goSouth() { this.yPos -= 1; }
 
-  goSouth() {
-    this.yPos -= 1;
-  }
+  goEast() { this.xPos += 1; }
 
-  goWest() {
-    this.xPos -= 1;
+  goWest() { this.xPos -= 1; }
+
+  parseDirection(direction) {
+    switch (direction) {
+      case '>':
+        this.goEast();
+        break;
+      case '<':
+        this.goWest();
+        break;
+      case '^':
+        this.goNorth();
+        break;
+      case 'v':
+        this.goSouth();
+        break;
+      default:
+        throw new InputError(`Unexpected input: ${direction}`);
+    }
   }
 
   get coordinates() {
