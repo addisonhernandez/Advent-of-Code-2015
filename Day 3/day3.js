@@ -72,3 +72,15 @@ class Point {
 }
 
 init();
+
+(function testPartOne() {
+  partOne('>');           // Should be 2
+  partOne('^>v<');        // Should be 4
+  partOne('^v^v^v^v^v');  // Should be 2
+});//();
+
+(function testPartTwo() {
+  partTwo('^v');          // 3
+  partTwo('^>v<');        // 3
+  partTwo('^v^v^v^v^v');  // 11
+});//();
