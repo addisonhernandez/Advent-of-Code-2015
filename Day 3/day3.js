@@ -9,31 +9,17 @@ function init() {
   aocLoader(year, day, session).then(input => main(input));
 }
 
-function main(input) {
-  // visitedHouses maps <house pos ~> # of visits>
-  const visitedHouses = new Map();
-
+function partOne(input) {
+  const visitedHouses = new Set();
   const pos = new Point();
 
-  visitedHouses.set(pos.coordinates, 1);
+  visitedHouses.add(pos.coordinates);
 
   for (const direction of input) {
-    switch (direction) {
-      case '>':
-        pos.goEast();
-        break;
-      case '<':
-        pos.goWest();
-        break;
-      case '^':
-        pos.goNorth();
-        break;
-      case 'v':
-        pos.goSouth();
-        break;
-      default:
-        throw new InputError(`Unexpected input: ${direction}`);
-    }
+    pos.parseDirection(direction);
+
+    visitedHouses.add(pos.coordinates);
+  }
 
     const numberOfVisits = (visitedHouses.get(pos.coordinates) ?? 0) + 1;
 
