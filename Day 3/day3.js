@@ -6,7 +6,10 @@ function init() {
   const day = 3;
   const session = process.env.AOC_SESSION;
 
-  aocLoader(year, day, session).then(input => main(input));
+  aocLoader(year, day, session).then(input => {
+    partOne(input);
+    partTwo(input);
+  });
 }
 
 function partOne(input) {
@@ -21,12 +24,27 @@ function partOne(input) {
     visitedHouses.add(pos.coordinates);
   }
 
-    const numberOfVisits = (visitedHouses.get(pos.coordinates) ?? 0) + 1;
+  console.log(`Number of housees that got at least one present: ${visitedHouses.size}`);
+}
 
-    visitedHouses.set(pos.coordinates, numberOfVisits);
+function partTwo(input) {
+  const visitedHouses = new Set();
+
+  const santaPos = new Point();
+  const robotPos = new Point();
+
+  visitedHouses.add(santaPos.coordinates);
+
+  for (let i = 0; i < input.length; i++) {
+    if (i % 2) {
+      santaPos.parseDirection(input[i]);
+      visitedHouses.add(santaPos.coordinates);
+    } else {
+      robotPos.parseDirection(input[i]);
+      visitedHouses.add(robotPos.coordinates);
+    }
   }
 
-  // solution for part one
   console.log(`Number of housees that got at least one present: ${visitedHouses.size}`);
 }
 
