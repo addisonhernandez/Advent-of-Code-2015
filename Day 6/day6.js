@@ -8,12 +8,39 @@ function init() {
 
   aocLoader(year, day, session).then(input => {
     partOne(input.split('\n'));
+    partTwo(input.split('\n'));
   });
 }
 
 function partOne(instructions) {
   const grid = new LightGrid();
 
+  // Add part one grid methods
+  grid.turnOn = function ([startX, startY, endX, endY]) {
+    for (let i = startX; i <= endX; i++) {
+      for (let j = startY; j <= endY; j++) {
+        this.lights[i][j] = 1;
+      }
+    }
+  };
+
+  grid.turnOff = function ([startX, startY, endX, endY]) {
+    for (let i = startX; i <= endX; i++) {
+      for (let j = startY; j <= endY; j++) {
+        this.lights[i][j] = 0;
+      }
+    }
+  };
+
+  grid.toggle = function ([startX, startY, endX, endY]) {
+    for (let i = startX; i <= endX; i++) {
+      for (let j = startY; j <= endY; j++) {
+        this.lights[i][j] = +!this.lights[i][j];
+      }
+    }
+  };
+
+  // parse instructions
   instructions.forEach(line => {
     const instruction = line.match(/^(.+?)(?:\s\d)/)[1];
     const coordinates = line.match(/(\d+)/g).map(Number);
@@ -32,35 +59,13 @@ function partOne(instructions) {
   console.log(`After ${instructions.length} instructions, ${grid.numberOfLightsOn} lights are on.`);
 }
 
+function partTwo(instructions) {
+
+}
+
 class LightGrid {
   constructor(length = 1000, width = 1000) {
-    // lights tracks the status of each light in the grid
-    // `false` -> off, `true` -> on
-    this.lights = new Array(length).fill(0).map(() => new Array(width).fill(false));
-  }
-
-  turnOn([startX, startY, endX, endY]) {
-    for (let i = startX; i <= endX; i++) {
-      for (let j = startY; j <= endY; j++) {
-        this.lights[i][j] = true;
-      }
-    }
-  }
-
-  turnOff([startX, startY, endX, endY]) {
-    for (let i = startX; i <= endX; i++) {
-      for (let j = startY; j <= endY; j++) {
-        this.lights[i][j] = false;
-      }
-    }
-  }
-
-  toggle([startX, startY, endX, endY]) {
-    for (let i = startX; i <= endX; i++) {
-      for (let j = startY; j <= endY; j++) {
-        this.lights[i][j] = !this.lights[i][j];
-      }
-    }
+    this.lights = new Array(length).fill(0).map(() => new Array(width).fill(0));
   }
 
   get numberOfLightsOn() {
