@@ -8,21 +8,22 @@ function init() {
 
   aocLoader(year, day, session).then(input => {
     partOne(input.split('\n'));
+    partTwo(input.split('\n'));
   });
 }
 
-function partOne(input) {
+function partOne(naughtyOrNice) {
   const threeVowelsRE = /[aeiou].*[aeiou].*[aeiou]/;
   const repeatedCharRE = /(.)\1/;
   const forbiddenRE = /ab|cd|pq|xy/;
 
   let numberOfNiceStrings = 0;
 
-  input.forEach(string => {
+  naughtyOrNice.forEach(line => {
     if (
-      threeVowelsRE.test(string) &&
-      repeatedCharRE.test(string) &&
-      !forbiddenRE.test(string)
+      threeVowelsRE.test(line) &&
+      repeatedCharRE.test(line) &&
+      !forbiddenRE.test(line)
     ) {
       numberOfNiceStrings++;
     }
@@ -31,16 +32,37 @@ function partOne(input) {
   console.log(`Number of nice strings: ${numberOfNiceStrings}`);
 }
 
-function partTwo(input) {
+function partTwo(naughtyOrNice) {
+  const twoCharsThatAppearTwiceRE = /(.)(.).*\1\2/
+  const repeatedCharWithOneBetweenRE = /(.).\1/
 
+  let numberOfNiceStrings = 0;
+
+  naughtyOrNice.forEach(line => {
+    if (
+      twoCharsThatAppearTwiceRE.test(line) &&
+      repeatedCharWithOneBetweenRE.test(line)
+    ) {
+      numberOfNiceStrings++;
+    }
+  });
+
+  console.log(`New number of nice strings: ${numberOfNiceStrings}`);
 }
 
 init();
 
-(function testExampleInputs() {
+(function testPartOne() {
   partOne(['ugknbfddgicrmopn']);  // nice
   partOne(['aaa']);               // nice
   partOne(['jchzalrnumimnmhp']);  // naughty
   partOne(['haegwjzuvuyypxyu']);  // naughty
   partOne(['dvszwmarrgswjxmb']);  // naughty
+});//();
+
+(function testPartTwo() {
+  partTwo(['qjhvhtzxzqqjkmpb']);  // nice
+  partTwo(['xxyxx']);             // nice
+  partTwo(['uurcxstgmygtbstg']);  // naughty
+  partTwo(['ieodomkazucvgmuy']);  // naughty
 });//();
