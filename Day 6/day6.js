@@ -16,24 +16,23 @@ function partOne(instructions) {
   const grid = new LightGrid();
 
   // Add part one grid methods
-  const onFunc = () => 1;
-  const offFunc = () => 0;
-  const toggleFunc = (light) => +!light;
+  const partOneMethods = {
+    'turn on':  () => 1,
+    'turn off': () => 0,
+    'toggle':   (light) => +!light,
+  };
 
   // parse instructions
   instructions.forEach(line => {
+    /*  Each instruction is of the form
+     *  [instruction] [###],[###] through [###],[###]
+     */
+    // match the words before the first set of numbers
     const instruction = line.match(/^(.+?)(?:\s\d)/)[1];
+    // match each grouping of digits
     const coordinates = line.match(/(\d+)/g).map(Number);
 
-    if (instruction === 'turn on') {
-      grid.turnOn(coordinates, onFunc);
-    } else if (instruction === 'turn off') {
-      grid.turnOff(coordinates, offFunc);
-    } else if (instruction === 'toggle') {
-      grid.toggle(coordinates, toggleFunc);
-    } else {
-      throw new InstructionError(`Invalid instruction: ${instruction}`);
-    }
+    grid.switchLights(partOneMethods[instruction], coordinates);
   });
 
   console.log(`After ${instructions.length} instructions, ${grid.sumOfLights} lights are on.`);
@@ -43,24 +42,18 @@ function partTwo(instructions) {
   const grid = new LightGrid();
 
   // Add part two methods
-  const onFunc = (light) => light + 1;
-  const offFunc = (light) => Math.max(light - 1, 0);
-  const toggleFunc = (light) => light + 2;
+  const partTwoMethods = {
+    'turn on':  (light) => light + 1,
+    'turn off': (light) => Math.max(light - 1, 0),
+    'toggle':   (light) => light + 2,
+  };
 
   // parse instructions
   instructions.forEach(line => {
     const instruction = line.match(/^(.+?)(?:\s\d)/)[1];
     const coordinates = line.match(/(\d+)/g).map(Number);
 
-    if (instruction === 'turn on') {
-      grid.turnOn(coordinates, onFunc);
-    } else if (instruction === 'turn off') {
-      grid.turnOff(coordinates, offFunc);
-    } else if (instruction === 'toggle') {
-      grid.toggle(coordinates, toggleFunc);
-    } else {
-      throw new InstructionError(`Invalid instruction: ${instruction}`);
-    }
+    grid.switchLights(partTwoMethods[instruction], coordinates);
   });
 
   console.log(`After ${instructions.length} instructions, total brightness is ${grid.sumOfLights}.`);
@@ -71,37 +64,18 @@ class LightGrid {
     this.lights = new Array(length).fill(0).map(() => new Array(width).fill(0));
   }
 
-  turnOn([startX, startY, endX, endY], onFunc) {
+  switchLights(lightFunc, [startX, startY, endX, endY]) {
     for (let i = startX; i <= endX; i++) {
       for (let j = startY; j <= endY; j++) {
-        // this.lights[i][j] = 1;
-        this.lights[i][j] = onFunc(this.lights[i][j]);
+        this.lights[i][j] = lightFunc(this.lights[i][j]);
       }
     }
-  };
-
-  turnOff([startX, startY, endX, endY], offFunc) {
-    for (let i = startX; i <= endX; i++) {
-      for (let j = startY; j <= endY; j++) {
-        // this.lights[i][j] = 0;
-        this.lights[i][j] = offFunc(this.lights[i][j]);
-      }
-    }
-  };
-
-  toggle([startX, startY, endX, endY], toggleFunc) {
-    for (let i = startX; i <= endX; i++) {
-      for (let j = startY; j <= endY; j++) {
-        // this.lights[i][j] = +!this.lights[i][j];
-        this.lights[i][j] = toggleFunc(this.lights[i][j]);
-      }
-    }
-  };
-
+  }
 
   get sumOfLights() {
     const sum = (arr) => arr.reduce((a, b) => a + b);
 
+    // calculate: the sum of the sum of each row
     return sum(this.lights.map(row => sum(row)));
   }
 }
